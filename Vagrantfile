@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
       os_aio_puppet.module_path = "modules"
       os_aio_puppet.manifests_path = "manifests"
       os_aio_puppet.manifest_file = "site.pp"
-      os_aio_puppet.options = "--verbose --debug"
+      os_aio_puppet.options = "--verbose" #--debug
     end
   end
 
