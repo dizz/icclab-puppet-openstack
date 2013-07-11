@@ -60,7 +60,7 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	}
 }	
 
-node /cmp.cloudcomplab.dev/ {
+node /cmp.cloudcomplab.dev/ inherits basenode {
 
 	class {'openstack::compute':
 
