@@ -1,18 +1,28 @@
 
 node basenode {
-  #ensure ntp installed on all nodes
-  class { 'ntp':
-    servers    => ['time.apple.com iburst', 'pool.ntp.org iburst', 'clock.redhat.com iburst'],
-    autoupdate => true,
-  }
+
+	# Shared params
+	#I know, this is HIGHLY insecure
+	$one_to_rule_them_all = 'admin'
+	$controller_node_int_address  = '10.10.100.51'
+	$private_interface = 'eth1'
+	$NewRelic_API_Key = ''
+
+	#ensure ntp installed on all nodes
+	class { 'ntp':
+		servers    => ['time.apple.com iburst', 'pool.ntp.org iburst', 'clock.redhat.com iburst'],
+	}
+
+	if $NewRelic_API_Key {
+		class { 'newrelic': 
+			license => $NewRelic_API_Key
+		}
+	}else {
+		fail('Cannot install newrelic, NewRelic_API_Key is not set')
+	}
+
 }
 
-# Shared params
-#I know, this is HIGHLY insecure
-$one_to_rule_them_all = 'admin'
-$controller_node_int_address  = '10.10.100.51'
-$private_interface = 'eth1'
-  
 node /ctl.cloudcomplab.dev/ inherits basenode {
 
 	include 'apache'
@@ -29,6 +39,7 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	    private_interface       => $private_interface,
 	    
 	    #quantum
+	    ## Note: addtional /etc/network/interfaces configuration needs to take place
 	    external_bridge_name    => 'br-ex',
 	    bridge_interface        => $public_interface, # what br-ex gets connected to
 	    metadata_shared_secret  => $one_to_rule_them_all,
