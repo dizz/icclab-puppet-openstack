@@ -18,7 +18,7 @@ node basenode {
 			license => $NewRelic_API_Key
 		}
 	}else {
-		fail('Cannot install newrelic, NewRelic_API_Key is not set')
+		warning ('Cannot install newrelic, NewRelic_API_Key is not set')
 	}
 
 }
