@@ -11,4 +11,6 @@ To get started:
 5. Have a coffee
 
 ## Status
-Currently, once both nodes run up the configuration is not correct. More validation of the quantum config is certainly needed.
+Basic services are operational. Minor updates required for network configuration (/etc/network/interfaces). Using [mseknibilel's](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide) guide to perform the basic validation.
+
+If you have changes, send a pull request! All pull requests happily received.
