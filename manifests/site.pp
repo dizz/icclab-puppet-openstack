@@ -1,5 +1,5 @@
 
-node default {
+node basenode {
   #ensure ntp installed on all nodes
   class { 'ntp':
     servers    => ['time.apple.com iburst', 'pool.ntp.org iburst', 'clock.redhat.com iburst'],
@@ -13,13 +13,13 @@ $one_to_rule_them_all = 'admin'
 $controller_node_int_address  = '10.10.100.51'
 $private_interface = 'eth1'
   
-node /ctl.cloudcomplab.dev/ {
+node /ctl.cloudcomplab.dev/ inherits basenode {
 
 	include 'apache'
+	
+	$public_interface = 'eth2'
 
 	class { 'openstack::controller':
-		
-		$public_interface = 'eth2'
 
 		#network
 		public_address          => $ipaddress_eth2,
