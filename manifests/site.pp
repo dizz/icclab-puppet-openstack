@@ -7,10 +7,11 @@ node basenode {
 	$controller_node_int_address  = '10.10.100.51'
 	$private_interface = 'eth1'
 	$NewRelic_API_Key = ''
+	$ntp_servers = ['time.apple.com iburst', 'pool.ntp.org iburst', 'clock.redhat.com iburst']
 
 	#ensure ntp installed on all nodes
 	class { 'ntp':
-		servers    => ['time.apple.com iburst', 'pool.ntp.org iburst', 'clock.redhat.com iburst'],
+		servers    => $ntp_servers,
 	}
 
 	if $NewRelic_API_Key {
@@ -57,12 +58,16 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 		glance_user_password    => $one_to_rule_them_all,
 		nova_db_password        => $one_to_rule_them_all,
 		nova_user_password      => $one_to_rule_them_all,
-		secret_key              => $one_to_rule_them_all,
 		quantum_user_password   => $one_to_rule_them_all,
 		quantum_db_password     => $one_to_rule_them_all,
 		cinder_user_password    => $one_to_rule_them_all,
 		cinder_db_password      => $one_to_rule_them_all,
-	}
+		savanna_user_password   => $one_to_rule_them_all,
+		savanna_db_password     => $one_to_rule_them_all,
+		secret_key              => $one_to_rule_them_all,
+	} ~>
+
+	class { 'savanna':}
   
 	class { 'openstack::auth_file':
 		admin_password       => 'admin',

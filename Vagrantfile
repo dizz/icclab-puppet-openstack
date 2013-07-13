@@ -2,11 +2,15 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  
+  config.cache.auto_detect = true
+
   config.vm.define :os_ctl do |os_ctl|
 
     hostname = os_ctl.vm.hostname = "ctl.cloudcomplab.dev"
 
     os_ctl.vm.box = "raring-server-cloudimg-vagrant-amd64-disk1"
+    # os_ctl.vm.box = "ubuntu13-latest"
     os_ctl.vm.box_url = "http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box"
 
     # Create a private network, which allows host-only access to the machine
@@ -41,7 +45,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.define :os_cmp do |os_cmp|
     hostname = os_cmp.vm.hostname = "cmp.cloudcomplab.dev"
-    os_cmp.vm.box = "raring-server-cloudimg-vagrant-amd64-disk1"
+    # os_cmp.vm.box = "raring-server-cloudimg-vagrant-amd64-disk1"
+    os_cmp.vm.box = "ubuntu13-latest"
     os_cmp.vm.box_url = "http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box"
 
     # eth1
