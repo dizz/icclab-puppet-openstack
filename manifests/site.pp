@@ -65,9 +65,7 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 		savanna_user_password   => $one_to_rule_them_all,
 		savanna_db_password     => $one_to_rule_them_all,
 		secret_key              => $one_to_rule_them_all,
-	} ~>
-
-	class { 'savanna':}
+	}
   
 	class { 'openstack::auth_file':
 		admin_password       => 'admin',
