@@ -16,7 +16,7 @@ node basenode {
 
 	if $NewRelic_API_Key {
 		class { 'newrelic': 
-			license => $NewRelic_API_Key
+			license => $NewRelic_API_Key,
 		}
 	}else {
 		warning ('Cannot install newrelic, NewRelic_API_Key is not set')
@@ -28,31 +28,29 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 
 	include 'apache'
 	
-	$public_interface = 'eth2'
-
-	#temporarily here
-	$ceilometer_db_name     = 'ceilometer'
-    $ceilometer_db_port     = '27017'
-    $ceilometer_db_protocol = 'mongodb'
+	$public_interface         = 'eth2'
+	$traffic_egress_interface = 'eth2'
 
 	class { 'openstack::controller':
 
 		#network
-		public_address          => $ipaddress_eth2,
-		internal_address        => $controller_node_int_address,
-		admin_address           => $controller_node_int_address,
-		public_interface        => $public_interface,
-	    private_interface       => $private_interface,
+		public_address           => $ipaddress_eth2,
+		internal_address         => $controller_node_int_address,
+		admin_address            => $controller_node_int_address,
+		public_interface         => $public_interface,
+	    private_interface        => $private_interface,
 	    
 	    #quantum
 	    ## Note: addtional /etc/network/interfaces configuration needs to take place
-	    external_bridge_name    => 'br-ex',
-	    bridge_interface        => $public_interface, # what br-ex gets connected to
-	    metadata_shared_secret  => $one_to_rule_them_all,
-	    ovs_local_ip            => $controller_node_int_address,
-	    enabled_apis            => 'ec2,osapi_compute,metadata',
-	    verbose                 => 'True',
-	    
+	    external_bridge_name     => 'br-ex',
+	    bridge_interface         => $traffic_egress_interface, # what br-ex gets connected to
+	    metadata_shared_secret   => $one_to_rule_them_all,
+	    ovs_local_ip             => $controller_node_int_address,
+	    enabled_apis             => 'ec2,osapi_compute,metadata',
+	    verbose                  => 'True',
+	    # services
+	    ## savanna disabled due to bug in rc2. 2.0 due july 15th.
+	    savanna                  => false,
 	    #passwords
 		admin_email              => 'me@here.com',
 		admin_password           => $one_to_rule_them_all,
