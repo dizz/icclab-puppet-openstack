@@ -54,57 +54,25 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	    verbose                 => 'True',
 	    
 	    #passwords
-		admin_email             => 'me@here.com',
-		admin_password          => $one_to_rule_them_all,
-		rabbit_password         => $one_to_rule_them_all,
-		keystone_db_password    => $one_to_rule_them_all,
-		keystone_admin_token    => $one_to_rule_them_all,
-		glance_db_password      => $one_to_rule_them_all,
-		glance_user_password    => $one_to_rule_them_all,
-		nova_db_password        => $one_to_rule_them_all,
-		nova_user_password      => $one_to_rule_them_all,
-		quantum_user_password   => $one_to_rule_them_all,
-		quantum_db_password     => $one_to_rule_them_all,
-		cinder_user_password    => $one_to_rule_them_all,
-		cinder_db_password      => $one_to_rule_them_all,
-		savanna_user_password   => $one_to_rule_them_all,
-		savanna_db_password     => $one_to_rule_them_all,
-		secret_key              => $one_to_rule_them_all,
-	} 
-
-	#TODO move these into openstack::controller class
-    class { 'ceilometer':
-        metering_secret    => $one_to_rule_them_all,
-        rabbit_host        => $controller_node_int_address,
-        rabbit_userid      => 'openstack',
-        rabbit_password    => $one_to_rule_them_all,
-        verbose            => 'False',
-        debug              => 'False',
-        development        => true,
-    } ~>
-
-    class {'mongodb':
-		enable_10gen => true,
-	} ~>
-
-    #TODO: need to set username/password
-    class { 'ceilometer::db':
-    	database_connection => "${ceilometer_db_protocol}://${controller_node_int_address}:${ceilometer_db_port}/${ceilometer_db_name}",
-    	require            => Class['mongodb'],
-  	} ~>
-
-  	class { 'ceilometer::api':
-		keystone_host              => $controller_node_int_address,
-		keystone_protocol          => 'http',
-		keystone_user              => 'ceilometer',
-		keystone_tenant            => 'services',
-		keystone_password          => $one_to_rule_them_all,
-		development                => true,
-    } ~>
-
-    class {'ceilometer::collector':
-    	development => true,
-    } ~>
+		admin_email              => 'me@here.com',
+		admin_password           => $one_to_rule_them_all,
+		rabbit_password          => $one_to_rule_them_all,
+		keystone_db_password     => $one_to_rule_them_all,
+		keystone_admin_token     => $one_to_rule_them_all,
+		glance_db_password       => $one_to_rule_them_all,
+		glance_user_password     => $one_to_rule_them_all,
+		nova_db_password         => $one_to_rule_them_all,
+		nova_user_password       => $one_to_rule_them_all,
+		quantum_user_password    => $one_to_rule_them_all,
+		quantum_db_password      => $one_to_rule_them_all,
+		cinder_user_password     => $one_to_rule_them_all,
+		cinder_db_password       => $one_to_rule_them_all,
+		savanna_user_password    => $one_to_rule_them_all,
+		savanna_db_password      => $one_to_rule_them_all,
+		ceilometer_user_password => $one_to_rule_them_all,
+		ceilometer_db_password   => $one_to_rule_them_all,
+		secret_key               => $one_to_rule_them_all,
+	}
 
 	class { 'openstack::auth_file':
         admin_password       => $one_to_rule_them_all,
