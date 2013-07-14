@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
   
-  config.cache.auto_detect = true
+  #config.cache.auto_detect = true
 
   config.vm.define :os_ctl do |os_ctl|
 

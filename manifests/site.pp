@@ -30,6 +30,11 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	
 	$public_interface = 'eth2'
 
+	#temporarily here
+	$ceilometer_db_name     = 'ceilometer'
+    $ceilometer_db_port     = '27017'
+    $ceilometer_db_protocol = 'mongodb'
+
 	class { 'openstack::controller':
 
 		#network
@@ -65,13 +70,47 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 		savanna_user_password   => $one_to_rule_them_all,
 		savanna_db_password     => $one_to_rule_them_all,
 		secret_key              => $one_to_rule_them_all,
-	}
-  
+	} 
+
+	#TODO move these into openstack::controller class
+    class { 'ceilometer':
+        metering_secret    => $one_to_rule_them_all,
+        rabbit_host        => $controller_node_int_address,
+        rabbit_userid      => 'openstack',
+        rabbit_password    => $one_to_rule_them_all,
+        verbose            => 'False',
+        debug              => 'False',
+        development        => true,
+    } ~>
+
+    class {'mongodb':
+		enable_10gen => true,
+	} ~>
+
+    #TODO: need to set username/password
+    class { 'ceilometer::db':
+    	database_connection => "${ceilometer_db_protocol}://${controller_node_int_address}:${ceilometer_db_port}/${ceilometer_db_name}",
+    	require            => Class['mongodb'],
+  	} ~>
+
+  	class { 'ceilometer::api':
+		keystone_host              => $controller_node_int_address,
+		keystone_protocol          => 'http',
+		keystone_user              => 'ceilometer',
+		keystone_tenant            => 'services',
+		keystone_password          => $one_to_rule_them_all,
+		development                => true,
+    } ~>
+
+    class {'ceilometer::collector':
+    	development => true,
+    } ~>
+
 	class { 'openstack::auth_file':
-		admin_password       => 'admin',
-		keystone_admin_token => 'admin',
-		controller_node      => '127.0.0.1',
-	}
+        admin_password       => $one_to_rule_them_all,
+        keystone_admin_token => $one_to_rule_them_all,
+        controller_node      => '127.0.0.1',
+    }
 }	
 
 node /cmp.cloudcomplab.dev/ inherits basenode {
@@ -105,5 +144,28 @@ node /cmp.cloudcomplab.dev/ inherits basenode {
 		rabbit_host             => $controller_node_int_address,
 		glance_api_servers      => "${controller_node_int_address}:9292",
 		vncproxy_host           => $controller_node_int_address,
+	} ~>
+
+	#TODO move these into openstack::compute class
+
+	class { 'ceilometer':
+		metering_secret    => 'darksecret',
+		package_ensure     => 'present',
+		verbose            => 'False',
+		debug              => 'False',
+		rabbit_host        => '127.0.0.1',
+		rabbit_port        => 5672,
+		rabbit_hosts       => undef,
+		rabbit_userid      => 'guest',
+		rabbit_password    => '',
+		rabbit_virtualhost => '/',
+	} ~>
+
+	class { 'ceilometer::agent::compute':
+		auth_url => "http://${controller_node_int_address}:5000/v2.0",
+		auth_region => 'RegionOne',
+		auth_user        => $one_to_rule_them_all,
+		auth_password    => $one_to_rule_them_all,
+		auth_tenant_name => $one_to_rule_them_all,
 	}
 }
