@@ -20,12 +20,14 @@ Vagrant.configure("2") do |config|
     os_ctl.vm.network :private_network, ip: "10.10.100.51", netmask: "255.255.255.0", nic_type: '82545EM'
     # eth2 pub mgt
     os_ctl.vm.network :private_network, ip: "192.168.100.51", netmask: "255.255.255.0", nic_type: '82545EM'
+    # eth3 egress traffic
+    os_ctl.vm.network :private_network, ip: "192.168.100.52", netmask: "255.255.255.0", nic_type: '82545EM'
     
     os_ctl.vm.provider :virtualbox do |vb|
       # Boot with headless mode vb.gui = true
       vb.customize ["modifyvm", :id, "--memory", "2048"]
-      #eth2
-      vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      #eth3
+      vb.customize ["modifyvm", :id, "--nicpromisc4", "allow-all"]
     end
 
     os_ctl.vm.provision :shell, :inline => "apt-get update && apt-get -y upgrade" # && apt-get -y dist-upgrade

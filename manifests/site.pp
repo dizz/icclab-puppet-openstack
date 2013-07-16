@@ -29,7 +29,7 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	include 'apache'
 	
 	$public_interface         = 'eth2'
-	$traffic_egress_interface = 'eth2'
+	$traffic_egress_interface = 'eth3'
 
 	class { 'openstack::controller':
 
@@ -50,7 +50,7 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	    verbose                  => 'True',
 	    # services
 	    ## savanna disabled due to bug in rc2. 2.0 due july 15th.
-	    savanna                  => false,
+	    savanna                  => true,
 	    #passwords
 		admin_email              => 'me@here.com',
 		admin_password           => $one_to_rule_them_all,
