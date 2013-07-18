@@ -110,28 +110,5 @@ node /cmp.cloudcomplab.dev/ inherits basenode {
 		rabbit_host             => $controller_node_int_address,
 		glance_api_servers      => "${controller_node_int_address}:9292",
 		vncproxy_host           => $controller_node_int_address,
-	} ~>
-
-	#TODO move these into openstack::compute class
-
-	class { 'ceilometer':
-		metering_secret    => 'darksecret',
-		package_ensure     => 'present',
-		verbose            => 'False',
-		debug              => 'False',
-		rabbit_host        => '127.0.0.1',
-		rabbit_port        => 5672,
-		rabbit_hosts       => undef,
-		rabbit_userid      => 'guest',
-		rabbit_password    => '',
-		rabbit_virtualhost => '/',
-	} ~>
-
-	class { 'ceilometer::agent::compute':
-		auth_url => "http://${controller_node_int_address}:5000/v2.0",
-		auth_region => 'RegionOne',
-		auth_user        => $one_to_rule_them_all,
-		auth_password    => $one_to_rule_them_all,
-		auth_tenant_name => $one_to_rule_them_all,
-	}
+	} 
 }
