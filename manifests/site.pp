@@ -14,9 +14,10 @@ node basenode {
 		servers    => $ntp_servers,
 	}
 
+	# TODO: fixme, I timeout on the 1st run, not the 2nd
 	if $NewRelic_API_Key {
-		class { 'newrelic': 
-			license => $NewRelic_API_Key,
+		newrelic::server { 'controller': 
+			newrelic_license_key => $NewRelic_API_Key,
 		}
 	}else {
 		warning ('Cannot install newrelic, NewRelic_API_Key is not set')
@@ -49,8 +50,9 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 	    enabled_apis             => 'ec2,osapi_compute,metadata',
 	    verbose                  => 'True',
 	    # services
-	    ## savanna disabled due to bug in rc2. 2.0 due july 15th.
-	    savanna                  => true,
+	    #ceilometer               => false,
+	    #savanna                  => false,
+	    #heat                     => true,
 	    #passwords
 		admin_email              => 'me@here.com',
 		admin_password           => $one_to_rule_them_all,
@@ -63,12 +65,14 @@ node /ctl.cloudcomplab.dev/ inherits basenode {
 		nova_user_password       => $one_to_rule_them_all,
 		quantum_user_password    => $one_to_rule_them_all,
 		quantum_db_password      => $one_to_rule_them_all,
-		cinder_user_password     => $one_to_rule_them_all,
-		cinder_db_password       => $one_to_rule_them_all,
-		savanna_user_password    => $one_to_rule_them_all,
-		savanna_db_password      => $one_to_rule_them_all,
-		ceilometer_user_password => $one_to_rule_them_all,
-		ceilometer_db_password   => $one_to_rule_them_all,
+		#cinder_user_password     => $one_to_rule_them_all,
+		#cinder_db_password       => $one_to_rule_them_all,
+		#savanna_user_password    => $one_to_rule_them_all,
+		#savanna_db_password      => $one_to_rule_them_all,
+		#ceilometer_user_password => $one_to_rule_them_all,
+		#ceilometer_db_password   => $one_to_rule_them_all,
+		#heat_db_password         => $one_to_rule_them_all,
+        #heat_user_password       => $one_to_rule_them_all,
 		secret_key               => $one_to_rule_them_all,
 	}
 
@@ -83,16 +87,21 @@ node /cmp.cloudcomplab.dev/ inherits basenode {
 
 	class {'openstack::compute':
 
+		#mongodb gets installed - bad!
+
 		#passwords
 		rabbit_password         => $one_to_rule_them_all,
 		nova_user_password      => $one_to_rule_them_all,
 		nova_db_password        => $one_to_rule_them_all,
 		quantum_user_password   => $one_to_rule_them_all,
 		cinder_db_password      => $one_to_rule_them_all,
-			  
+		#ceilometer_user_password => $one_to_rule_them_all,
+		#ceilometer_db_password  => $one_to_rule_them_all,
+  		#ceilometer_metering_secret => $one_to_rule_them_all,
+
 		#network
 		private_interface       => $private_interface,
-		internal_address        => $ipaddress_eth1,
+		internal_address        => $ipaddress_eth0,
 
 		#database
 		db_host                 => $controller_node_int_address,
